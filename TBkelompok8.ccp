@@ -1,10 +1,10 @@
 #include <GL/glut.h>
+#include <math.h>
 
-// Variabel untuk transformasi bola
-float ballPosX = 0.0f, ballPosY = 0.5f, ballPosZ = 2.5f;
+float ballPosX = 0.0f, ballPosY = 0.3f, ballPosZ = 2.5f;
 float rotationAngle = 0.0f;  // Rotasi gawang
 bool isRotating = true;      // Flag untuk kontrol rotasi otomatis gawang
-bool hidden = false;        // Flag untuk mengontrol apakah garis kartesius ditampilkan
+bool hidden = false;         // Flag untuk mengontrol apakah garis kartesius ditampilkan
 float globalScale = 1.0f;    // Variabel untuk mengontrol skala seluruh objek
 
 void init() {
@@ -30,39 +30,46 @@ void init() {
     glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
     glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
 }
-void hiddenCarte();
+
+
+//////////////////////////////////////////////////////////////////////////// BAGIAN SINTIA////////////////////////////////////////////////
 // Fungsi untuk menggambar sumbu kartesius
-void drawCarteCius() {
+void drawCartesius() {
     glDisable(GL_LIGHTING); // Matikan pencahayaan sementara untuk garis
     glLineWidth(2.0f);
 
     glBegin(GL_LINES);
     // Sumbu X (Merah)
     glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(-5.0f, 0.0f, 0.0f);
-    glVertex3f(5.0f, 0.0f, 0.0f);
+    glVertex3f(-20.0f, 0.0f, 0.0f);
+    glVertex3f(20.0f, 0.0f, 0.0f);
 
     // Sumbu Y (Hijau)
     glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(0.0f, -5.0f, 0.0f);
-    glVertex3f(0.0f, 5.0f, 0.0f);
+    glVertex3f(0.0f, -20.0f, 0.0f);
+    glVertex3f(0.0f, 20.0f, 0.0f);
 
     // Sumbu Z (Biru)
     glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(0.0f, 0.0f, -5.0f);
-    glVertex3f(0.0f, 0.0f, 5.0f);
+    glVertex3f(0.0f, 0.0f, -20.0f);
+    glVertex3f(0.0f, 0.0f, 20.0f);
     glEnd();
+
+    
 
     glEnable(GL_LIGHTING); // Nyalakan kembali pencahayaan
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// menggambar jaring 
-void drawNet() {
+
+
+////////////////////////////////////////////////////////////////////////////////BAGIAN GINA////////////////////////////////////////////////////
+void gambarnet() {
     glColor3f(0.9f, 0.9f, 0.9f);
-    float spacing = 0.2f; //jarak antar garis jaring 
+    float spacing = 0.2f; // Jarak antar garis jaring 
 
-//belakang
+    // Belakang
     for (float x = -1.5f; x <= 1.5f; x += spacing) {
         glBegin(GL_LINES);
         glVertex3f(x, 0.0f, -1.0f);
@@ -88,8 +95,8 @@ void drawNet() {
         glVertex3f(-1.5f, y, -1.0f);
         glEnd();
     }
-//kanan 
-  for (float z = 0.0f; z >= -1.0f; z -= spacing) {
+    // Kanan 
+    for (float z = 0.0f; z >= -1.0f; z -= spacing) {
         glBegin(GL_LINES);
         glVertex3f(1.5f, 0.0f, z);
         glVertex3f(1.5f, 2.0f, z);
@@ -101,7 +108,7 @@ void drawNet() {
         glVertex3f(1.5f, y, -1.0f);
         glEnd();
     }
-//atas
+    // Atas
     for (float x = -1.5f; x <= 1.5f; x += spacing) {
         glBegin(GL_LINES);
         glVertex3f(x, 2.0f, 0.0f);
@@ -115,126 +122,144 @@ void drawNet() {
         glEnd();
     }
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void drawSoccerBall() {
+
+
+////////////////////////////////////////////////////////////////// BAGIAN SINTIA///////////////////////////////////////////////////////////////
+void gambarBall() {
     glColor3f(1.0f, 1.0f, 0.0f);
     glPushMatrix();
     glTranslatef(ballPosX, ballPosY, ballPosZ);
     glutSolidSphere(0.3f, 50, 50);
     glPopMatrix();
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void drawSoccerGoal() {
+
+
+////////////////////////////////////////////////////////////////// BAGIAN GINA /////////////////////////////////////////////////////////
+void gambartianggawang() {
     glColor3f(1.0f, 1.0f, 1.0f);
-
+    
+    // Tiang kiri depan
     glPushMatrix();
     glTranslatef(-1.5f, 1.0f, 0.0f);
     glScalef(0.1f, 2.0f, 0.1f);
     glutSolidCube(1.0f);
     glPopMatrix();
-
+    
+    // Tiang kanan depan
     glPushMatrix();
     glTranslatef(1.5f, 1.0f, 0.0f);
     glScalef(0.1f, 2.0f, 0.1f);
     glutSolidCube(1.0f);
     glPopMatrix();
-
+    
+    // Tiang kanan belakang
     glPushMatrix();
-    glTranslatef(0.0f, 2.0f, 0.0f);
-    glScalef(3.0f, 0.1f, 0.1f);
+    glTranslatef(1.5f, 1.0f, -1.0f);
+    glScalef(0.1f, 2.0f, 0.1f);
     glutSolidCube(1.0f);
     glPopMatrix();
-
+    
+    // Tiang kiri belakang
     glPushMatrix();
     glTranslatef(-1.5f, 1.0f, -1.0f);
     glScalef(0.1f, 2.0f, 0.1f);
     glutSolidCube(1.0f);
     glPopMatrix();
 
+    // Tiang atas depan
     glPushMatrix();
-    glTranslatef(1.5f, 1.0f, -1.0f);
-    glScalef(0.1f, 2.0f, 0.1f);
+    glTranslatef(0.0f, 2.0f, 0.0f);
+    glScalef(3.0f, 0.1f, 0.1f);
     glutSolidCube(1.0f);
     glPopMatrix();
-
+    
+    // Tiang atas belakang
     glPushMatrix();
     glTranslatef(0.0f, 2.0f, -1.0f);
     glScalef(3.0f, 0.1f, 0.1f);
     glutSolidCube(1.0f);
     glPopMatrix();
 
+    // Tiang kiri bawah
     glPushMatrix();
     glTranslatef(-1.5f, 0.0f, -0.5f);
     glScalef(0.1f, 0.1f, 1.0f);
     glutSolidCube(1.0f);
     glPopMatrix();
+    
+    // Tiang atas kanan
+    glPushMatrix();
+    glTranslatef(1.5f, 2.0f, -0.5f);
+    glScalef(0.1f, 0.1f, 1.11f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+    
+    // Tiang atas kiri
+    glPushMatrix();
+    glTranslatef(-1.5f, 2.0f, -0.5f);
+    glScalef(0.1f, 0.1f, 1.11f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
 
+    // Tiang kanan bawah
     glPushMatrix();
     glTranslatef(1.5f, 0.0f, -0.5f);
     glScalef(0.1f, 0.1f, 1.0f);
     glutSolidCube(1.0f);
     glPopMatrix();
 
+    // Tiang bawah belakang
     glPushMatrix();
     glTranslatef(0.0f, 0.0f, -1.0f);
     glScalef(3.0f, 0.1f, 0.1f);
     glutSolidCube(1.0f);
     glPopMatrix();
 
-    drawNet();
+    gambarnet();
 }
-// buat tanah/rumput
-void drawCube(float x,float y, float z, float size){
-	glPushMatrix();
-	glColor3ub(0,100,0);
-	glTranslatef(x,y,z);
-	glScalef(size,size,size);
-	glutSolidCube(1.0f);
-	glPopMatrix();
-	
-    glDisable(GL_LIGHTING); // Matikan pencahayaan sementara untuk garis
-    glLineWidth(1.0f);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    glBegin(GL_LINES);
-    // Sumbu X (Merah)
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(-15.0f, 0.0f, 0.0f);
-    glVertex3f(15.0f, 0.0f, 0.0f);
 
-    // Sumbu Y (Hijau)
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(0.0f, -25.0f, 0.0f);
-    glVertex3f(0.0f, 14.0f, 0.0f);
-
-    // Sumbu Z (Biru)
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(0.0f, 0.0f, -0.0f);
-    glVertex3f(0.0f, 0.0f, 0.0f);
-    glEnd();
-
-    glEnable(GL_LIGHTING); // Nyalakan kembali pencahayaan
+// Buat tanah/rumput
+void gambartanah(float x, float y, float z, float scaleX, float scaleY, float scaleZ) {
+    glPushMatrix();
+    glColor3ub(0, 100, 0); // Warna hijau untuk lantai
+    glTranslatef(x, y, z); // Posisi lantai
+    glScalef(scaleX, scaleY, scaleZ); // Skala pada setiap sumbu
+    glutSolidCube(1.0f); // Menggambar kubus
+    glPopMatrix();
 }
-
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    gluLookAt(0.0, 3.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-    if (hidden) { // Hanya gambar garis kartesius jika showAxes bernilai true
-        drawCarteCius();
-    }
-
+    gluLookAt(0.0, 3.0, 5.0, 
+              0.0, 0.0, 0.0, 
+              0.0, 1.0, 0.0);
+    
     glPushMatrix();
     glScalef(globalScale, globalScale, globalScale); // Terapkan skala global
 
     glPushMatrix();
-    glRotatef(rotationAngle, 0.0f, 1.0f, 0.0f);
-    drawSoccerGoal();
+    glRotatef(rotationAngle, 0.0f, 0.01f, 0.0f);
+    
+   
+    
+    // Gambar garis kartesius di dalam transformasi yang sama dengan objek
+    if (!hidden) {
+        drawCartesius();
+    }
+    
+    gambartianggawang();
     glPopMatrix();
-	drawCube(0,-5,0,10);
-    drawSoccerBall();
+    
+    gambartanah(0, 0, 0, 10, 0.1, 10); // Menggambar tanah tipis 
+    gambarBall();
 
     glPopMatrix();
 
@@ -249,6 +274,7 @@ void reshape(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
+// Fungsi untuk menangani input keyboard
 void keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 'w': // Maju bola
@@ -286,10 +312,10 @@ void keyboard(unsigned char key, int x, int y) {
     }
     glutPostRedisplay();
 }
-void updateRotation(){
 
+void updateRotation() {
     if (isRotating) {
-        rotationAngle += 0.1f; // Kecepatan rotasi
+        rotationAngle += 0.02f; // Kecepatan rotasi 
         if (rotationAngle > 360.0f) {
             rotationAngle -= 360.0f;
         }
